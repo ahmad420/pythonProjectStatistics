@@ -1,6 +1,7 @@
 import pandas as pd
 from tabulate import tabulate
 import colorama
+import matplotlib.pyplot as plt
 
 colorama.init()
 
@@ -10,52 +11,152 @@ def create_dummy_data():
     data = [
         {
             "productID": "P001",
-            "name": "Product 1",
-            "description": "This is product 1",
-            "category": "Category A",
-            "manufacturer": "Manufacturer X",
-            "price": 10.99,
-            "quantity": 100,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P002",
-            "name": "Product 2",
-            "description": "This is product 2",
-            "category": "Category B",
-            "manufacturer": "Manufacturer Y",
-            "price": 24.99,
+            "name": "Smartwatch",
+            "description": "High-tech smartwatch with fitness tracking",
+            "category": "Electronics",
+            "manufacturer": "Brand A",
+            "price": 159.99,
             "quantity": 50,
             "unitOfMeasurement": "pcs"
         },
         {
+            "productID": "P002",
+            "name": "Wireless Headphones",
+            "description": "Premium wireless headphones with noise cancellation",
+            "category": "Electronics",
+            "manufacturer": "Brand B",
+            "price": 249.99,
+            "quantity": 100,
+            "unitOfMeasurement": "pcs"
+        },
+        {
             "productID": "P003",
-            "name": "Product 3",
-            "description": "This is product 3",
-            "category": "Category A",
-            "manufacturer": "Manufacturer Z",
-            "price": 7.49,
+            "name": "Digital Camera",
+            "description": "Professional-grade digital camera with 4K video recording",
+            "category": "Electronics",
+            "manufacturer": "Brand C",
+            "price": 899.95,
             "quantity": 200,
             "unitOfMeasurement": "pcs"
         },
         {
             "productID": "P004",
-            "name": "Product 4",
-            "description": "This is product 4",
-            "category": "Category C",
-            "manufacturer": "Manufacturer X",
-            "price": 14.95,
+            "name": "Gaming Laptop",
+            "description": "Powerful gaming laptop with RGB lighting",
+            "category": "Electronics",
+            "manufacturer": "Brand D",
+            "price": 1799.99,
             "quantity": 75,
             "unitOfMeasurement": "pcs"
         },
         {
             "productID": "P005",
-            "name": "Product 5",
-            "description": "This is product 5",
-            "category": "Category B",
-            "manufacturer": "Manufacturer Z",
-            "price": 19.99,
+            "name": "4K UHD TV",
+            "description": "Large 4K UHD TV with smart features",
+            "category": "Electronics",
+            "manufacturer": "Brand E",
+            "price": 999.99,
             "quantity": 120,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P006",
+            "name": "Leather Handbag",
+            "description": "Stylish leather handbag for women",
+            "category": "Fashion",
+            "manufacturer": "Brand F",
+            "price": 149.50,
+            "quantity": 80,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P007",
+            "name": "Men's Dress Shoes",
+            "description": "Elegant men's dress shoes for formal occasions",
+            "category": "Fashion",
+            "manufacturer": "Brand G",
+            "price": 99.95,
+            "quantity": 150,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P008",
+            "name": "Designer Watch",
+            "description": "Luxury designer watch with automatic movement",
+            "category": "Fashion",
+            "manufacturer": "Brand H",
+            "price": 499.75,
+            "quantity": 90,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P009",
+            "name": "Women's Sneakers",
+            "description": "Comfortable women's sneakers for casual wear",
+            "category": "Fashion",
+            "manufacturer": "Brand I",
+            "price": 89.99,
+            "quantity": 110,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P010",
+            "name": "Denim Jeans",
+            "description": "Classic denim jeans for men",
+            "category": "Fashion",
+            "manufacturer": "Brand J",
+            "price": 59.50,
+            "quantity": 70,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P011",
+            "name": "Coffee Maker",
+            "description": "Automatic coffee maker with built-in grinder",
+            "category": "Home & Kitchen",
+            "manufacturer": "Brand K",
+            "price": 129.99,
+            "quantity": 90,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P012",
+            "name": "Air Fryer",
+            "description": "Compact air fryer for healthy cooking",
+            "category": "Home & Kitchen",
+            "manufacturer": "Brand L",
+            "price": 79.99,
+            "quantity": 130,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P013",
+            "name": "Robot Vacuum Cleaner",
+            "description": "Smart robot vacuum cleaner with mapping technology",
+            "category": "Home & Kitchen",
+            "manufacturer": "Brand M",
+            "price": 299.95,
+            "quantity": 180,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P014",
+            "name": "Memory Foam Pillow",
+            "description": "Orthopedic memory foam pillow for better sleep",
+            "category": "Home & Kitchen",
+            "manufacturer": "Brand N",
+            "price": 49.75,
+            "quantity": 70,
+            "unitOfMeasurement": "pcs"
+        },
+        {
+            "productID": "P015",
+            "name": "Essential Oil Diffuser",
+            "description": "Aroma diffuser with LED lighting and timer",
+            "category": "Home & Kitchen",
+            "manufacturer": "Brand O",
+            "price": 39.99,
+            "quantity": 160,
             "unitOfMeasurement": "pcs"
         }
     ]
@@ -106,38 +207,58 @@ def create_warehouses_data():
     warehouses_data = [
         {
             "warehouseID": "W001",
-            "name": "Warehouse 1",
-            "location": "City A",
-            "capacity": 1000,
-            "manager": "John Smith"
+            "name": "Central Warehouse",
+            "location": "New York",
+            "capacity": 5000,
+            "manager": "John Smith",
+            "staff_count": 12,
+            "products": ["Electronics", "Home Appliances", "Toys"],
+            "annual_revenue": 12000000,
+            "is_owned": True
         },
         {
             "warehouseID": "W002",
-            "name": "Warehouse 2",
-            "location": "City B",
-            "capacity": 1500,
-            "manager": "Jane Doe"
+            "name": "North Warehouse",
+            "location": "Chicago",
+            "capacity": 4000,
+            "manager": "Jane Doe",
+            "staff_count": 8,
+            "products": ["Clothing", "Footwear", "Accessories"],
+            "annual_revenue": 8000000,
+            "is_owned": True
         },
         {
             "warehouseID": "W003",
-            "name": "Warehouse 3",
-            "location": "City C",
-            "capacity": 800,
-            "manager": "Michael Johnson"
+            "name": "South Warehouse",
+            "location": "Miami",
+            "capacity": 3500,
+            "manager": "Michael Johnson",
+            "staff_count": 10,
+            "products": ["Beauty", "Health", "Personal Care"],
+            "annual_revenue": 6000000,
+            "is_owned": True
         },
         {
             "warehouseID": "W004",
-            "name": "Warehouse 4",
-            "location": "City D",
-            "capacity": 1200,
-            "manager": "Emily Brown"
+            "name": "East Warehouse",
+            "location": "Atlanta",
+            "capacity": 3000,
+            "manager": "Emily Brown",
+            "staff_count": 6,
+            "products": ["Food", "Beverages", "Snacks"],
+            "annual_revenue": 5000000,
+            "is_owned": True
         },
         {
             "warehouseID": "W005",
-            "name": "Warehouse 5",
-            "location": "City E",
-            "capacity": 2000,
-            "manager": "Robert Green"
+            "name": "West Warehouse",
+            "location": "Los Angeles",
+            "capacity": 4500,
+            "manager": "Robert Green",
+            "staff_count": 14,
+            "products": ["Furniture", "Home Decor", "Office Supplies"],
+            "annual_revenue": 10000000,
+            "is_owned": True
         }
     ]
 
@@ -156,7 +277,10 @@ def create_stocks_data():
             "warehouseID": "W001",
             "quantity": 100,
             "minStockLevel": 50,
-            "reorderQuantity": 30
+            "reorderQuantity": 30,
+            "lastUpdated": "2023-07-24 10:15:00",
+            "supplier": "ABC Suppliers",
+            "unitPrice": 25.50
         },
         {
             "stockID": "ST002",
@@ -164,7 +288,10 @@ def create_stocks_data():
             "warehouseID": "W001",
             "quantity": 80,
             "minStockLevel": 40,
-            "reorderQuantity": 20
+            "reorderQuantity": 20,
+            "lastUpdated": "2023-07-24 09:30:00",
+            "supplier": "XYZ Distributors",
+            "unitPrice": 12.75
         },
         {
             "stockID": "ST003",
@@ -172,7 +299,10 @@ def create_stocks_data():
             "warehouseID": "W002",
             "quantity": 120,
             "minStockLevel": 60,
-            "reorderQuantity": 40
+            "reorderQuantity": 40,
+            "lastUpdated": "2023-07-24 11:45:00",
+            "supplier": "LMN Traders",
+            "unitPrice": 28.90
         },
         {
             "stockID": "ST004",
@@ -180,7 +310,10 @@ def create_stocks_data():
             "warehouseID": "W003",
             "quantity": 60,
             "minStockLevel": 30,
-            "reorderQuantity": 25
+            "reorderQuantity": 25,
+            "lastUpdated": "2023-07-24 12:30:00",
+            "supplier": "DEF Wholesalers",
+            "unitPrice": 19.99
         },
         {
             "stockID": "ST005",
@@ -188,7 +321,10 @@ def create_stocks_data():
             "warehouseID": "W003",
             "quantity": 150,
             "minStockLevel": 75,
-            "reorderQuantity": 50
+            "reorderQuantity": 50,
+            "lastUpdated": "2023-07-24 13:15:00",
+            "supplier": "GHI Retailers",
+            "unitPrice": 35.60
         }
     ]
 
@@ -206,35 +342,35 @@ def create_shelves_data():
             "warehouseID": "W001",
             "capacity": 200,
             "currentCapacity": 100,
-            "description": "Shelf 1 in Warehouse 1"
+            "description": "Electronics Shelf in Warehouse 1, Section A"
         },
         {
             "shelfID": "SH002",
             "warehouseID": "W001",
             "capacity": 150,
             "currentCapacity": 80,
-            "description": "Shelf 2 in Warehouse 1"
+            "description": "Home Appliances Shelf in Warehouse 1, Section B"
         },
         {
             "shelfID": "SH003",
             "warehouseID": "W002",
             "capacity": 300,
             "currentCapacity": 200,
-            "description": "Shelf 1 in Warehouse 2"
+            "description": "Clothing Shelf in Warehouse 2, Section A"
         },
         {
             "shelfID": "SH004",
             "warehouseID": "W002",
             "capacity": 250,
             "currentCapacity": 150,
-            "description": "Shelf 2 in Warehouse 2"
+            "description": "Footwear Shelf in Warehouse 2, Section B"
         },
         {
             "shelfID": "SH005",
             "warehouseID": "W003",
-            "capacity": 180,
+            "capacity": 400,
             "currentCapacity": 120,
-            "description": "Shelf 1 in Warehouse 3"
+            "description": "Accessories Shelf in Warehouse 3, Section A"
         }
     ]
 
@@ -313,6 +449,142 @@ def display_colored_table(dataframe):
         print(style_tables(dataframe))
 
 
+def create_product_prices_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['name'], df['price'], color='skyblue')
+    plt.xlabel('Product Name')
+    plt.ylabel('Price ($)')
+    plt.title('Product Prices')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+def create_product_prices_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['name'], df['price'], color='skyblue')
+    plt.xlabel('Product Name')
+    plt.ylabel('Price ($)')
+    plt.title('Product Prices')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a line chart for product quantities
+def create_product_quantities_line_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['name'], df['quantity'], marker='o', color='green', linestyle='-', linewidth=2)
+    plt.xlabel('Product Name')
+    plt.ylabel('Quantity')
+    plt.title('Product Quantities')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a pie chart for product categories
+def create_product_categories_pie_chart(df):
+    plt.figure(figsize=(8, 8))
+    plt.pie(df['category'].value_counts(), labels=df['category'].unique(), autopct='%1.1f%%', startangle=90,
+            colors=['gold', 'lightcoral', 'lightskyblue', 'lightgreen'])
+    plt.title('Product Categories')
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a bar chart for supplier contact persons
+def create_supplier_contact_persons_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['name'], df['contactPerson'], color='orange')
+    plt.xlabel('Supplier Name')
+    plt.ylabel('Contact Person')
+    plt.title('Supplier Contact Persons')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a bar chart for warehouse capacities
+def create_warehouse_capacities_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['name'], df['capacity'], color='purple')
+    plt.xlabel('Warehouse Name')
+    plt.ylabel('Capacity')
+    plt.title('Warehouse Capacities')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a pie chart for warehouse locations
+def create_warehouse_locations_pie_chart(df):
+    plt.figure(figsize=(8, 8))
+    plt.pie(df['location'].value_counts(), labels=df['location'].unique(), autopct='%1.1f%%', startangle=90,
+            colors=['gold', 'lightcoral', 'lightskyblue', 'lightgreen', 'lightpink'])
+    plt.title('Warehouse Locations')
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a bar chart for stock quantities
+def create_stock_quantities_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['productID'], df['quantity'], color='teal')
+    plt.xlabel('Product ID')
+    plt.ylabel('Quantity')
+    plt.title('Stock Quantities')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a line chart for shelf capacities
+def create_shelf_capacities_line_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['shelfID'], df['capacity'], marker='o', color='red', linestyle='-', linewidth=2)
+    plt.xlabel('Shelf ID')
+    plt.ylabel('Capacity')
+    plt.title('Shelf Capacities')
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+
+# Function to create a pie chart for shelf descriptions
+def create_shelf_descriptions_pie_chart(df):
+    plt.figure(figsize=(8, 8))
+    plt.pie(df['description'].value_counts(), labels=df['description'].unique(), autopct='%1.1f%%', startangle=90,
+            colors=['gold', 'lightcoral', 'lightskyblue', 'lightgreen', 'lightpink'])
+    plt.title('Shelf Descriptions')
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.show()
+
+    # Main graph menu
+def graph_menu():
+        print("\nGraphs Menu:")
+        print("1. Product Prices Bar Chart")
+        print("2. Product Quantities Line Chart")
+        print("3. Product Categories Pie Chart")
+        print("4. Supplier Contact Persons Bar Chart")
+        print("5. Warehouse Capacities Bar Chart")
+        print("6. Warehouse Locations Pie Chart")
+        print("7. Stock Quantities Bar Chart")
+        print("8. Shelf Capacities Line Chart")
+        print("9. Shelf Descriptions Pie Chart")
+        print("0. Back to Main Menu")
+
+
 # Main menu function
 def main_menu():
     print("===== Main Menu =====")
@@ -321,6 +593,7 @@ def main_menu():
     print("3. Display Warehouses Table")
     print("4. Display Stocks Table")
     print("5. Display Shelves Table")
+    print("6. Display graphs menu Table")
     print("0. Exit")
 
 
@@ -344,8 +617,38 @@ while True:
     elif choice == "5":
         print("\nStyled Shelves Table:")
         display_colored_table(shelves_table_df)
+    elif choice == "6":
+        # Go to the graphs menu
+        while True:
+            graph_menu()
+            graph_choice = input("Enter your choice (0-9): ")
+
+            if graph_choice == "1":
+                create_product_prices_bar_chart(dummy_table_df)
+            elif graph_choice == "2":
+                create_product_quantities_line_chart(dummy_table_df)
+            elif graph_choice == "3":
+                create_product_categories_pie_chart(dummy_table_df)
+            elif graph_choice == "4":
+                create_supplier_contact_persons_bar_chart(suppliers_table_df)
+            elif graph_choice == "5":
+                create_warehouse_capacities_bar_chart(warehouses_table_df)
+            elif graph_choice == "6":
+                create_warehouse_locations_pie_chart(warehouses_table_df)
+            elif graph_choice == "7":
+                create_stock_quantities_bar_chart(stocks_table_df)
+            elif graph_choice == "8":
+                create_shelf_capacities_line_chart(shelves_table_df)
+            elif graph_choice == "9":
+                create_shelf_descriptions_pie_chart(shelves_table_df)
+            elif graph_choice == "0":
+                break
+            else:
+                print("Invalid choice! Please select a valid option (0-9).")
+
     elif choice == "0":
         print("Exiting... Goodbye!")
         break
+
     else:
-        print("Invalid choice! Please select a valid option (0-5).")
+        print("Invalid choice! Please select a valid option (0-6).")
