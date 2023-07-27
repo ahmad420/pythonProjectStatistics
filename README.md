@@ -1,6 +1,9 @@
 # Warehouse Management System with Python Statistics
 
-![Warehouse Management System]()
+<p align="center">
+  <img src="graph.png" width="700" height="400">
+</p>
+
 
 ## Description
 
