@@ -1,13 +1,20 @@
 # Warehouse Management System with Python Statistics
 
 <p align="center">
-  <img src="graph.png" width="700" height="400">
+  <img src="imgs/graph.png" width="700" height="400">
 </p>
 
 
 ## Description
 
 This Python project is a comprehensive Warehouse Management System that provides statistical insights and analysis for various components within a warehouse. The system is designed to handle data related to Warehouse, Department, Rack, Shelve, Product, Package, Stock, Supervisor, Worker, Supplier, and Client. By leveraging Python's powerful libraries for data analysis and visualization, this project offers valuable statistics to optimize warehouse operations and enhance decision-making processes.
+<p align="center">
+  <img src="imgs/bar1.png" width="400" height="400">
+  <img src="imgs/bars2.png" width="400" height="400">
+  <img src="imgs/line1.png" width="400" height="400">
+  
+</p>
+
 
 ## Features
 
