@@ -1,12 +1,12 @@
-import configparser
-import pandas as pd
-import pymongo as pymongo
-from tabulate import tabulate
-import colorama
-import matplotlib.pyplot as plt
-from termcolor import colored
-
-colorama.init()
+import configparser  # For read and write configuration files in INI format.
+import multiprocessing  # For managing multiple processes
+import pandas as pd  # For data manipulation and analysis
+import pymongo as pymongo  # For interacting with MongoDB database.
+from tabulate import tabulate  # For formatting tabular data.
+import matplotlib.pyplot as plt  # For creating plots and charts.
+import sys  # For system-specific functions and variables.
+import time  # For time-related functions.
+from tqdm import tqdm  # For creating progress bars in loops.
 
 # Initialize the configparser object
 config = configparser.ConfigParser()
@@ -16,6 +16,192 @@ config.read('config.ini')
 
 # Get the MongoDB URI from the configuration
 DB_URI = config.get('Database', 'DB_URI')
+
+
+# *************************
+# MongoDB Data Handling Functions
+# *************************
+def get_collection_by_name(uri, collection_name, database_name):
+    client = None
+    try:
+        client = pymongo.MongoClient(uri)
+        database = client[database_name]
+        collection = database[collection_name]
+
+        # Get the total number of documents in the collection
+        total_documents = collection.count_documents({})
+
+        # Initialize tqdm with the total number of documents for the loading bar
+        with tqdm(total=total_documents, desc="Loading collection data",
+                  bar_format="{desc}: {percentage:.1f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining},"
+                             " {rate_fmt}{postfix}]",
+                  ncols=100, colour='green') as pbar:
+            result = list(collection.find({}))
+            pbar.update(len(result))
+
+        return result
+    except pymongo.errors.ConnectionFailure as e:
+        raise e
+    finally:
+        client.close()
+
+
+def insert_data_to_collection(uri, database_name, collection_name, data):
+    client = None
+    try:
+        # Connect to the MongoDB database
+        client = pymongo.MongoClient(uri)
+        db = client[database_name]
+
+        # Select the collection
+        collection = db[collection_name]
+
+        # Insert data into the collection
+        if isinstance(data, list):
+            # If data is a list, insert multiple documents
+            collection.insert_many(data)
+        elif isinstance(data, dict):
+            # If data is a dictionary, insert a single document
+            collection.insert_one(data)
+        else:
+            raise ValueError("Invalid data format. Data must be a dict or a list of dicts.")
+
+        print("Data inserted successfully.")
+    except Exception as e:
+        print("Error inserting data:", e)
+    finally:
+        # Close the database connection
+        client.close()
+
+
+def get_collections(database_uri, database_name):
+    # Connect to the MongoDB server
+    client = pymongo.MongoClient(database_uri)
+
+    # Access the specified database
+    db = client[database_name]
+
+    # Get a list of all collections in the database
+    collection_names = db.list_collection_names()
+
+    # Create a list to hold the collection objects
+    collections_list = []
+
+    # Iterate through each collection
+    for collection_name in collection_names:
+        # Access the collection
+        collection = db[collection_name]
+
+        # Fetch all documents from the collection and convert them to a list
+        documents = list(collection.find())
+
+        # Create an object to represent the collection and its documents
+        collection_object = {
+            'collection_name': collection_name,
+            'documents': documents
+        }
+
+        # Add the collection object to the list
+        collections_list.append(collection_object)
+
+    # Close the MongoDB connection
+    client.close()
+
+    return collections_list
+
+
+def display_collection_names(uri, database_name):
+    client = None
+
+    loading_duration = 5  # Adjust the duration of the loading animation as needed
+    loading_interval = 0.1  # Adjust the interval between each frame update as needed
+
+    # Start the loading animation process
+    loading_process = multiprocessing.Process(target=loading, args=(loading_duration, loading_interval))
+    loading_process.start()
+
+    try:
+        client = pymongo.MongoClient(uri)
+        if client:
+            # Access the database
+            db = client[database_name]
+
+            # Get the collection names and display them
+            collection_names = db.list_collection_names()
+
+            return collection_names
+
+    finally:
+        # Ensure that the loading animation process is terminated and joined, even if an exception occurs
+        loading_process.terminate()
+        loading_process.join()
+        client.close()
+
+
+def get_collection_documents(collections_arrays, collection_name):
+    products_documents = None
+
+    if collections_arrays:
+        for collection in collections_arrays:
+            if collection['collection_name'] == collection_name:
+                products_documents = collection['documents']
+                break
+    else:
+        print("somthing went wrong")
+
+    return products_documents
+
+
+def fetch_collections(database_uri, database_name, collection_names):
+    client = None
+    loading_duration = 5  # Adjust the duration of the loading animation as needed
+    loading_interval = 0.1  # Adjust the interval between each frame update as needed
+
+    # Start the loading animation process
+    loading_process = multiprocessing.Process(target=loading, args=(loading_duration, loading_interval))
+    loading_process.start()
+
+    try:
+        client = pymongo.MongoClient(database_uri)
+        db = client[database_name]
+
+        collections = {}
+        for collection_name in collection_names:
+            collections[collection_name] = list(db[collection_name].find())
+        print("\n")
+        return collections
+
+    finally:
+        # Ensure that the loading animation process is terminated and joined, even if an exception occurs
+        loading_process.terminate()
+        loading_process.join()
+        client.close()
+
+
+def get_documents_by_collection(collections_dict, collection_name):
+    for key, value in collections_dict.items():
+        if key == collection_name:
+            return value
+
+    return None
+
+
+def loading(duration=5, interval=0.1):
+    frames = ['-', '\\', '|', '/']  # Animation frames
+    total_frames = len(frames)
+    num_frames = int(duration / interval)
+
+    for i in range(num_frames):
+        frame = frames[i % total_frames]
+        sys.stdout.write(f'\rLoading... {frame}')
+        sys.stdout.flush()
+        time.sleep(interval)
+
+    sys.stdout.write('\rLoading... Done!\n')
+    sys.stdout.flush()
+
+
+# *************************
 
 
 # Function to style the tables
@@ -38,11 +224,13 @@ def style_tables(df):
 
 
 # Function to format and style the DataFrame using tabulate
-def style_tables(df):
-    # Convert the DataFrame to a tabular format using tabulate
-    tabular_data = tabulate(df, headers='keys', tablefmt='grid')
 
-    return tabular_data
+def display_array_as_table(array):
+    if not array:
+        print("No data to display.")
+        return
+    row_str = " | " + " | ".join(f"{i + 1}: \033[1;36m{str(item)}\033[0m" for i, item in enumerate(array))
+    print(row_str)
 
 
 # Style and display each DataFrame with colors
@@ -69,18 +257,6 @@ def display_colored_table(dataframe):
     except ImportError:
         # If colorama is not installed, display the table without colors
         print(style_tables(dataframe))
-
-
-def create_product_prices_bar_chart(df):
-    plt.figure(figsize=(10, 6))
-    plt.bar(df['name'], df['price'], color='skyblue')
-    plt.xlabel('Product Name')
-    plt.ylabel('Price ($)')
-    plt.title('Product Prices')
-    plt.xticks(rotation=45)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.show()
 
 
 def create_product_prices_bar_chart(df):
@@ -197,131 +373,6 @@ def create_shelf_capacities_bar_chart(df):
     plt.show()
 
 
-# *************************
-def insert_data_to_collection(uri, database_name, collection_name, data):
-    """
-    Inserts data into an existing collection in MongoDB.
-
-    Parameters:
-        uri (str): The MongoDB URI with the correct scheme (e.g., 'mongodb://').
-        database_name (str): The name of the MongoDB database.
-        collection_name (str): The name of the collection to which data will be added.
-        data (dict or list): The data to be inserted. It can be a single document (dict)
-                             or a list of documents (list of dicts).
-
-    Returns:
-        None
-    """
-    try:
-        # Connect to the MongoDB database
-        client = pymongo.MongoClient(uri)
-        db = client[database_name]
-
-        # Select the collection
-        collection = db[collection_name]
-
-        # Insert data into the collection
-        if isinstance(data, list):
-            # If data is a list, insert multiple documents
-            collection.insert_many(data)
-        elif isinstance(data, dict):
-            # If data is a dictionary, insert a single document
-            collection.insert_one(data)
-        else:
-            raise ValueError("Invalid data format. Data must be a dict or a list of dicts.")
-
-        print("Data inserted successfully.")
-    except Exception as e:
-        print("Error inserting data:", e)
-    finally:
-        # Close the database connection
-        client.close()
-
-
-def get_collections(database_uri, database_name):
-    # Connect to the MongoDB server
-    client = pymongo.MongoClient(database_uri)
-
-    # Access the specified database
-    db = client[database_name]
-
-    # Get a list of all collections in the database
-    collection_names = db.list_collection_names()
-
-    # Create a list to hold the collection objects
-    collections_list = []
-
-    # Iterate through each collection
-    for collection_name in collection_names:
-        # Access the collection
-        collection = db[collection_name]
-
-        # Fetch all documents from the collection and convert them to a list
-        documents = list(collection.find())
-
-        # Create an object to represent the collection and its documents
-        collection_object = {
-            'collection_name': collection_name,
-            'documents': documents
-        }
-
-        # Add the collection object to the list
-        collections_list.append(collection_object)
-
-    # Close the MongoDB connection
-    client.close()
-
-    return collections_list
-
-
-def display_collection_names(uri, client, database_name):
-    client = pymongo.MongoClient(uri)
-    if client:
-        # Access the database
-        db = client[database_name]
-
-        # Get the collection names and display them
-        collection_names = db.list_collection_names()
-
-        return collection_names
-
-
-def display_array_as_table(array, headers=None, tablefmt="fancy_grid"):
-    if not array:
-        print("No data to display.")
-        return
-    colored_items = [colored(str(item), "blue", attrs=["bold"]) for item in array]
-    row_str = " | " + " | ".join(f"{i + 1}: \033[1;36m{str(item)}\033[0m" for i, item in enumerate(array))
-    print(row_str)
-
-
-def get_collection_documents(collections_arrays, collection_name):
-    products_documents = None
-
-    if collections_arrays:
-        for collection in collections_arrays:
-            if collection['collection_name'] == collection_name:
-                products_documents = collection['documents']
-                break
-    else:
-        print("somthing went wrong")
-
-    return products_documents
-
-
-def fetch_collections(database_uri, database_name, collection_names):
-    client = pymongo.MongoClient(database_uri)
-    db = client[database_name]
-
-    collections = {}
-    for collection_name in collection_names:
-        collections[collection_name] = list(db[collection_name].find())
-
-    client.close()
-    return collections
-
-
-# *************************
 def graph_menu():
     print("\nGraphs Menu:")
     print("1. Product Prices Bar Chart")
@@ -339,61 +390,64 @@ def graph_menu():
 # Main menu function
 def main_menu():
     print("===== Main Menu =====")
-    print("1. Display Dummy Table")
-    print("2. Display Suppliers Table")
-    print("3. Display Warehouses Table")
-    print("4. Display Stocks Table")
-    print("5. Display Shelves Table")
-    print("6. Display graphs menu Table")
-    print("0. Exit")
+    print("1. Display collections names")
+    print("2. Display products Table by number")
+    print("3. Display graphs menu Table")
+    print("4. add items to DB")
+    print("5. refresh data (fetch from DB)")
+    print("6. Exit")
 
 
-# Main program loop
 def main():
     uri = config.get('Database', 'DB_URI')
     database_name = "PYTHON-DB"
-    name = "ahmdaf"
 
-    collection_names = display_collection_names(uri, name, database_name)
+    collection_names = display_collection_names(uri, database_name)
     collections = fetch_collections(uri, database_name, collection_names)
 
     # Convert the collections to DataFrames
-    dummy_table_df = pd.DataFrame(collections["products"])
+    products_table_df = pd.DataFrame(collections["products"])
     suppliers_table_df = pd.DataFrame(collections["suppliers"])
     warehouses_table_df = pd.DataFrame(collections["warehouses"])
     stocks_table_df = pd.DataFrame(collections["stocks"])
-    shelves_table_df = pd.DataFrame(collections[" shelves"])
+    shelves_table_df = pd.DataFrame(collections["shelves"])
+
     while True:
         main_menu()
-        choice = input("Enter your choice (0-5): ")
+        choice = input("Enter your choice (1-4): ")
 
         if choice == "1":
-            print("\nStyled Dummy Table:")
-            display_colored_table(dummy_table_df)
+            if collection_names:
+                display_array_as_table(collection_names)
+            else:
+                print("Something went wrong with fetching collection names.")
         elif choice == "2":
-            print("\nStyled Suppliers Table:")
-            display_colored_table(suppliers_table_df)
+            print("\nStyled collictions Tables:")
+            if collection_names:
+                display_array_as_table(collection_names)
+                selected_index = int(input("Enter the number of the collection to view  the table: "))
+                if 1 <= selected_index <= len(collection_names):
+                    collection_name = collection_names[selected_index - 1]
+                    print(collection_name)
+                    data = get_documents_by_collection(collections, collection_name)
+                    print(data)
+                    display_colored_table(data)
+                else:
+                    print("Invalid selection. Please try again.")
+            else:
+                print("Something went wrong with fetching collection names.")
         elif choice == "3":
-            print("\nStyled Warehouses Table:")
-            display_colored_table(warehouses_table_df)
-        elif choice == "4":
-            print("\nStyled Stocks Table:")
-            display_colored_table(stocks_table_df)
-        elif choice == "5":
-            print("\nStyled Shelves Table:")
-            display_colored_table(shelves_table_df)
-        elif choice == "6":
             # Go to the graphs menu
             while True:
                 graph_menu()
                 graph_choice = input("Enter your choice (0-9): ")
 
                 if graph_choice == "1":
-                    create_product_prices_bar_chart(dummy_table_df)
+                    create_product_prices_bar_chart(products_table_df)
                 elif graph_choice == "2":
-                    create_product_quantities_line_chart(dummy_table_df)
+                    create_product_quantities_line_chart(products_table_df)
                 elif graph_choice == "3":
-                    create_product_categories_pie_chart(dummy_table_df)
+                    create_product_categories_pie_chart(products_table_df)
                 elif graph_choice == "4":
                     create_supplier_contact_persons_bar_chart(suppliers_table_df)
                 elif graph_choice == "5":
@@ -411,12 +465,31 @@ def main():
                 else:
                     print("Invalid choice! Please select a valid option (0-9).")
 
-        elif choice == "0":
+        elif choice == "4":
+            print("adding dummy items to DB ..")
+            data = [
+                {
+                    "productID": "T002",
+                    "name": "Product 2",
+                    "description": "This is product 2",
+                    "category": "Category A",
+                    "manufacturer": "Manufacturer X",
+                    "price": 10.99,
+                    "quantity": 100,
+                    "unitOfMeasurement": "pcs"
+                }]
+            insert_data_to_collection(uri, database_name, "products", data)
+
+        elif choice == "5":
+            print("fetching data from mongodb server .. ")
+            collection_names = display_collection_names(uri, database_name)
+            collections = fetch_collections(uri, database_name, collection_names)
+
+        elif choice == "6":
             print("Exiting... Goodbye!")
             break
-
         else:
-            print("Invalid choice! Please select a valid option (0-6).")
+            print("Invalid choice! Please select a valid option (1-6).")
 
 
 if __name__ == "__main__":
