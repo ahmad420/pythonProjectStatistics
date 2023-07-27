@@ -1,391 +1,21 @@
+import configparser
 import pandas as pd
+import pymongo as pymongo
 from tabulate import tabulate
 import colorama
 import matplotlib.pyplot as plt
+from termcolor import colored
 
 colorama.init()
 
+# Initialize the configparser object
+config = configparser.ConfigParser()
 
-def create_dummy_data():
-    # Dummy data as a list of dictionaries
-    data = [
-        {
-            "productID": "P001",
-            "name": "Smartwatch",
-            "description": "High-tech smartwatch with fitness tracking",
-            "category": "Electronics",
-            "manufacturer": "Brand A",
-            "price": 159.99,
-            "quantity": 50,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P002",
-            "name": "Wireless Headphones",
-            "description": "Premium wireless headphones with noise cancellation",
-            "category": "Electronics",
-            "manufacturer": "Brand B",
-            "price": 249.99,
-            "quantity": 100,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P003",
-            "name": "Digital Camera",
-            "description": "Professional-grade digital camera with 4K video recording",
-            "category": "Electronics",
-            "manufacturer": "Brand C",
-            "price": 899.95,
-            "quantity": 200,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P004",
-            "name": "Gaming Laptop",
-            "description": "Powerful gaming laptop with RGB lighting",
-            "category": "Electronics",
-            "manufacturer": "Brand D",
-            "price": 1799.99,
-            "quantity": 75,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P005",
-            "name": "4K UHD TV",
-            "description": "Large 4K UHD TV with smart features",
-            "category": "Electronics",
-            "manufacturer": "Brand E",
-            "price": 999.99,
-            "quantity": 120,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P006",
-            "name": "Leather Handbag",
-            "description": "Stylish leather handbag for women",
-            "category": "Fashion",
-            "manufacturer": "Brand F",
-            "price": 149.50,
-            "quantity": 80,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P007",
-            "name": "Men's Dress Shoes",
-            "description": "Elegant men's dress shoes for formal occasions",
-            "category": "Fashion",
-            "manufacturer": "Brand G",
-            "price": 99.95,
-            "quantity": 150,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P008",
-            "name": "Designer Watch",
-            "description": "Luxury designer watch with automatic movement",
-            "category": "Fashion",
-            "manufacturer": "Brand H",
-            "price": 499.75,
-            "quantity": 90,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P009",
-            "name": "Women's Sneakers",
-            "description": "Comfortable women's sneakers for casual wear",
-            "category": "Fashion",
-            "manufacturer": "Brand I",
-            "price": 89.99,
-            "quantity": 110,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P010",
-            "name": "Denim Jeans",
-            "description": "Classic denim jeans for men",
-            "category": "Fashion",
-            "manufacturer": "Brand J",
-            "price": 59.50,
-            "quantity": 70,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P011",
-            "name": "Coffee Maker",
-            "description": "Automatic coffee maker with built-in grinder",
-            "category": "Home & Kitchen",
-            "manufacturer": "Brand K",
-            "price": 129.99,
-            "quantity": 90,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P012",
-            "name": "Air Fryer",
-            "description": "Compact air fryer for healthy cooking",
-            "category": "Home & Kitchen",
-            "manufacturer": "Brand L",
-            "price": 79.99,
-            "quantity": 130,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P013",
-            "name": "Robot Vacuum Cleaner",
-            "description": "Smart robot vacuum cleaner with mapping technology",
-            "category": "Home & Kitchen",
-            "manufacturer": "Brand M",
-            "price": 299.95,
-            "quantity": 180,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P014",
-            "name": "Memory Foam Pillow",
-            "description": "Orthopedic memory foam pillow for better sleep",
-            "category": "Home & Kitchen",
-            "manufacturer": "Brand N",
-            "price": 49.75,
-            "quantity": 70,
-            "unitOfMeasurement": "pcs"
-        },
-        {
-            "productID": "P015",
-            "name": "Essential Oil Diffuser",
-            "description": "Aroma diffuser with LED lighting and timer",
-            "category": "Home & Kitchen",
-            "manufacturer": "Brand O",
-            "price": 39.99,
-            "quantity": 160,
-            "unitOfMeasurement": "pcs"
-        }
-    ]
+# Load the configuration file
+config.read('config.ini')
 
-    # Create DataFrame from the data
-    df = pd.DataFrame(data)
-
-    return df
-
-
-def create_suppliers_data():
-    # Dummy data for suppliers as a list of dictionaries
-    suppliers_data = [
-        {
-            "supplierID": "S001",
-            "name": "Supplier 1",
-            "contactPerson": "John Doe",
-            "email": "john.doe@supplier1.com",
-            "phone": "+1234567890",
-            "address": "123 Main Street, City A"
-        },
-        {
-            "supplierID": "S002",
-            "name": "Supplier 2",
-            "contactPerson": "Jane Smith",
-            "email": "jane.smith@supplier2.com",
-            "phone": "+9876543210",
-            "address": "456 Oak Avenue, City B"
-        },
-        {
-            "supplierID": "S003",
-            "name": "Supplier 3",
-            "contactPerson": "Michael Johnson",
-            "email": "michael.johnson@supplier3.com",
-            "phone": "+4443332221",
-            "address": "789 Elm Road, City C"
-        }
-    ]
-
-    # Create DataFrame for suppliers
-    suppliers_df = pd.DataFrame(suppliers_data)
-
-    return suppliers_df
-
-
-def create_warehouses_data():
-    # Dummy data for warehouses as a list of dictionaries
-    warehouses_data = [
-        {
-            "warehouseID": "W001",
-            "name": "Central Warehouse",
-            "location": "New York",
-            "capacity": 5000,
-            "manager": "John Smith",
-            "staff_count": 12,
-            "products": ["Electronics", "Home Appliances", "Toys"],
-            "annual_revenue": 12000000,
-            "is_owned": True
-        },
-        {
-            "warehouseID": "W002",
-            "name": "North Warehouse",
-            "location": "Chicago",
-            "capacity": 4000,
-            "manager": "Jane Doe",
-            "staff_count": 8,
-            "products": ["Clothing", "Footwear", "Accessories"],
-            "annual_revenue": 8000000,
-            "is_owned": True
-        },
-        {
-            "warehouseID": "W003",
-            "name": "South Warehouse",
-            "location": "Miami",
-            "capacity": 3500,
-            "manager": "Michael Johnson",
-            "staff_count": 10,
-            "products": ["Beauty", "Health", "Personal Care"],
-            "annual_revenue": 6000000,
-            "is_owned": True
-        },
-        {
-            "warehouseID": "W004",
-            "name": "East Warehouse",
-            "location": "Atlanta",
-            "capacity": 3000,
-            "manager": "Emily Brown",
-            "staff_count": 6,
-            "products": ["Food", "Beverages", "Snacks"],
-            "annual_revenue": 5000000,
-            "is_owned": True
-        },
-        {
-            "warehouseID": "W005",
-            "name": "West Warehouse",
-            "location": "Los Angeles",
-            "capacity": 4500,
-            "manager": "Robert Green",
-            "staff_count": 14,
-            "products": ["Furniture", "Home Decor", "Office Supplies"],
-            "annual_revenue": 10000000,
-            "is_owned": True
-        }
-    ]
-
-    # Create DataFrame for warehouses
-    warehouses_df = pd.DataFrame(warehouses_data)
-
-    return warehouses_df
-
-
-def create_stocks_data():
-    # Dummy data for stocks as a list of dictionaries
-    stocks_data = [
-        {
-            "stockID": "ST001",
-            "productID": "P001",
-            "warehouseID": "W001",
-            "quantity": 100,
-            "minStockLevel": 50,
-            "reorderQuantity": 30,
-            "lastUpdated": "2023-07-24 10:15:00",
-            "supplier": "ABC Suppliers",
-            "unitPrice": 25.50
-        },
-        {
-            "stockID": "ST002",
-            "productID": "P002",
-            "warehouseID": "W001",
-            "quantity": 80,
-            "minStockLevel": 40,
-            "reorderQuantity": 20,
-            "lastUpdated": "2023-07-24 09:30:00",
-            "supplier": "XYZ Distributors",
-            "unitPrice": 12.75
-        },
-        {
-            "stockID": "ST003",
-            "productID": "P001",
-            "warehouseID": "W002",
-            "quantity": 120,
-            "minStockLevel": 60,
-            "reorderQuantity": 40,
-            "lastUpdated": "2023-07-24 11:45:00",
-            "supplier": "LMN Traders",
-            "unitPrice": 28.90
-        },
-        {
-            "stockID": "ST004",
-            "productID": "P003",
-            "warehouseID": "W003",
-            "quantity": 60,
-            "minStockLevel": 30,
-            "reorderQuantity": 25,
-            "lastUpdated": "2023-07-24 12:30:00",
-            "supplier": "DEF Wholesalers",
-            "unitPrice": 19.99
-        },
-        {
-            "stockID": "ST005",
-            "productID": "P004",
-            "warehouseID": "W003",
-            "quantity": 150,
-            "minStockLevel": 75,
-            "reorderQuantity": 50,
-            "lastUpdated": "2023-07-24 13:15:00",
-            "supplier": "GHI Retailers",
-            "unitPrice": 35.60
-        }
-    ]
-
-    # Create DataFrame for stocks
-    stocks_df = pd.DataFrame(stocks_data)
-
-    return stocks_df
-
-
-def create_shelves_data():
-    # Dummy data for shelves as a list of dictionaries
-    shelves_data = [
-        {
-            "shelfID": "SH001",
-            "warehouseID": "W001",
-            "capacity": 200,
-            "currentCapacity": 100,
-            "description": "Electronics Shelf in Warehouse 1, Section A"
-        },
-        {
-            "shelfID": "SH002",
-            "warehouseID": "W001",
-            "capacity": 150,
-            "currentCapacity": 80,
-            "description": "Home Appliances Shelf in Warehouse 1, Section B"
-        },
-        {
-            "shelfID": "SH003",
-            "warehouseID": "W002",
-            "capacity": 300,
-            "currentCapacity": 200,
-            "description": "Clothing Shelf in Warehouse 2, Section A"
-        },
-        {
-            "shelfID": "SH004",
-            "warehouseID": "W002",
-            "capacity": 250,
-            "currentCapacity": 150,
-            "description": "Footwear Shelf in Warehouse 2, Section B"
-        },
-        {
-            "shelfID": "SH005",
-            "warehouseID": "W003",
-            "capacity": 400,
-            "currentCapacity": 120,
-            "description": "Accessories Shelf in Warehouse 3, Section A"
-        }
-    ]
-
-    # Create DataFrame for shelves
-    shelves_df = pd.DataFrame(shelves_data)
-
-    return shelves_df
-
-
-# Call the functions to create the DataFrames
-dummy_table_df = create_dummy_data()
-suppliers_table_df = create_suppliers_data()
-warehouses_table_df = create_warehouses_data()
-stocks_table_df = create_stocks_data()
-shelves_table_df = create_shelves_data()
+# Get the MongoDB URI from the configuration
+DB_URI = config.get('Database', 'DB_URI')
 
 
 # Function to style the tables
@@ -405,14 +35,6 @@ def style_tables(df):
         'selector': 'td',
         'props': [('text-align', 'center')]
     }])
-
-
-# Call the functions to create the DataFrames
-dummy_table_df = create_dummy_data()
-suppliers_table_df = create_suppliers_data()
-warehouses_table_df = create_warehouses_data()
-stocks_table_df = create_stocks_data()
-shelves_table_df = create_shelves_data()
 
 
 # Function to format and style the DataFrame using tabulate
@@ -561,28 +183,157 @@ def create_shelf_capacities_line_chart(df):
 
 
 # Function to create a pie chart for shelf descriptions
-def create_shelf_descriptions_pie_chart(df):
-    plt.figure(figsize=(8, 8))
-    plt.pie(df['description'].value_counts(), labels=df['description'].unique(), autopct='%1.1f%%', startangle=90,
-            colors=['gold', 'lightcoral', 'lightskyblue', 'lightgreen', 'lightpink'])
-    plt.title('Shelf Descriptions')
-    plt.axis('equal')
+def create_shelf_capacities_bar_chart(df):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['shelfID'], df['capacity'], color='purple', label='Shelf Capacity')
+    plt.bar(df['shelfID'], df['currentCapacity'], color='orange', label='Current Capacity')
+    plt.xlabel('Shelf ID')
+    plt.ylabel('Capacity')
+    plt.title('Shelf Capacity vs Current Capacity')
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.show()
 
-    # Main graph menu
+
+# *************************
+def insert_data_to_collection(uri, database_name, collection_name, data):
+    """
+    Inserts data into an existing collection in MongoDB.
+
+    Parameters:
+        uri (str): The MongoDB URI with the correct scheme (e.g., 'mongodb://').
+        database_name (str): The name of the MongoDB database.
+        collection_name (str): The name of the collection to which data will be added.
+        data (dict or list): The data to be inserted. It can be a single document (dict)
+                             or a list of documents (list of dicts).
+
+    Returns:
+        None
+    """
+    try:
+        # Connect to the MongoDB database
+        client = pymongo.MongoClient(uri)
+        db = client[database_name]
+
+        # Select the collection
+        collection = db[collection_name]
+
+        # Insert data into the collection
+        if isinstance(data, list):
+            # If data is a list, insert multiple documents
+            collection.insert_many(data)
+        elif isinstance(data, dict):
+            # If data is a dictionary, insert a single document
+            collection.insert_one(data)
+        else:
+            raise ValueError("Invalid data format. Data must be a dict or a list of dicts.")
+
+        print("Data inserted successfully.")
+    except Exception as e:
+        print("Error inserting data:", e)
+    finally:
+        # Close the database connection
+        client.close()
+
+
+def get_collections(database_uri, database_name):
+    # Connect to the MongoDB server
+    client = pymongo.MongoClient(database_uri)
+
+    # Access the specified database
+    db = client[database_name]
+
+    # Get a list of all collections in the database
+    collection_names = db.list_collection_names()
+
+    # Create a list to hold the collection objects
+    collections_list = []
+
+    # Iterate through each collection
+    for collection_name in collection_names:
+        # Access the collection
+        collection = db[collection_name]
+
+        # Fetch all documents from the collection and convert them to a list
+        documents = list(collection.find())
+
+        # Create an object to represent the collection and its documents
+        collection_object = {
+            'collection_name': collection_name,
+            'documents': documents
+        }
+
+        # Add the collection object to the list
+        collections_list.append(collection_object)
+
+    # Close the MongoDB connection
+    client.close()
+
+    return collections_list
+
+
+def display_collection_names(uri, client, database_name):
+    client = pymongo.MongoClient(uri)
+    if client:
+        # Access the database
+        db = client[database_name]
+
+        # Get the collection names and display them
+        collection_names = db.list_collection_names()
+
+        return collection_names
+
+
+def display_array_as_table(array, headers=None, tablefmt="fancy_grid"):
+    if not array:
+        print("No data to display.")
+        return
+    colored_items = [colored(str(item), "blue", attrs=["bold"]) for item in array]
+    row_str = " | " + " | ".join(f"{i + 1}: \033[1;36m{str(item)}\033[0m" for i, item in enumerate(array))
+    print(row_str)
+
+
+def get_collection_documents(collections_arrays, collection_name):
+    products_documents = None
+
+    if collections_arrays:
+        for collection in collections_arrays:
+            if collection['collection_name'] == collection_name:
+                products_documents = collection['documents']
+                break
+    else:
+        print("somthing went wrong")
+
+    return products_documents
+
+
+def fetch_collections(database_uri, database_name, collection_names):
+    client = pymongo.MongoClient(database_uri)
+    db = client[database_name]
+
+    collections = {}
+    for collection_name in collection_names:
+        collections[collection_name] = list(db[collection_name].find())
+
+    client.close()
+    return collections
+
+
+# *************************
 def graph_menu():
-        print("\nGraphs Menu:")
-        print("1. Product Prices Bar Chart")
-        print("2. Product Quantities Line Chart")
-        print("3. Product Categories Pie Chart")
-        print("4. Supplier Contact Persons Bar Chart")
-        print("5. Warehouse Capacities Bar Chart")
-        print("6. Warehouse Locations Pie Chart")
-        print("7. Stock Quantities Bar Chart")
-        print("8. Shelf Capacities Line Chart")
-        print("9. Shelf Descriptions Pie Chart")
-        print("0. Back to Main Menu")
+    print("\nGraphs Menu:")
+    print("1. Product Prices Bar Chart")
+    print("2. Product Quantities Line Chart")
+    print("3. Product Categories Pie Chart")
+    print("4. Supplier Contact Persons Bar Chart")
+    print("5. Warehouse Capacities Bar Chart")
+    print("6. Warehouse Locations Pie Chart")
+    print("7. Stock Quantities Bar Chart")
+    print("8. Shelf Capacities Line Chart")
+    print("9. Shelf Descriptions Pie Chart")
+    print("0. Back to Main Menu")
 
 
 # Main menu function
@@ -598,57 +349,75 @@ def main_menu():
 
 
 # Main program loop
-while True:
-    main_menu()
-    choice = input("Enter your choice (0-5): ")
+def main():
+    uri = config.get('Database', 'DB_URI')
+    database_name = "PYTHON-DB"
+    name = "ahmdaf"
 
-    if choice == "1":
-        print("\nStyled Dummy Table:")
-        display_colored_table(dummy_table_df)
-    elif choice == "2":
-        print("\nStyled Suppliers Table:")
-        display_colored_table(suppliers_table_df)
-    elif choice == "3":
-        print("\nStyled Warehouses Table:")
-        display_colored_table(warehouses_table_df)
-    elif choice == "4":
-        print("\nStyled Stocks Table:")
-        display_colored_table(stocks_table_df)
-    elif choice == "5":
-        print("\nStyled Shelves Table:")
-        display_colored_table(shelves_table_df)
-    elif choice == "6":
-        # Go to the graphs menu
-        while True:
-            graph_menu()
-            graph_choice = input("Enter your choice (0-9): ")
+    collection_names = display_collection_names(uri, name, database_name)
+    collections = fetch_collections(uri, database_name, collection_names)
 
-            if graph_choice == "1":
-                create_product_prices_bar_chart(dummy_table_df)
-            elif graph_choice == "2":
-                create_product_quantities_line_chart(dummy_table_df)
-            elif graph_choice == "3":
-                create_product_categories_pie_chart(dummy_table_df)
-            elif graph_choice == "4":
-                create_supplier_contact_persons_bar_chart(suppliers_table_df)
-            elif graph_choice == "5":
-                create_warehouse_capacities_bar_chart(warehouses_table_df)
-            elif graph_choice == "6":
-                create_warehouse_locations_pie_chart(warehouses_table_df)
-            elif graph_choice == "7":
-                create_stock_quantities_bar_chart(stocks_table_df)
-            elif graph_choice == "8":
-                create_shelf_capacities_line_chart(shelves_table_df)
-            elif graph_choice == "9":
-                create_shelf_descriptions_pie_chart(shelves_table_df)
-            elif graph_choice == "0":
-                break
-            else:
-                print("Invalid choice! Please select a valid option (0-9).")
+    # Convert the collections to DataFrames
+    dummy_table_df = pd.DataFrame(collections["products"])
+    suppliers_table_df = pd.DataFrame(collections["suppliers"])
+    warehouses_table_df = pd.DataFrame(collections["warehouses"])
+    stocks_table_df = pd.DataFrame(collections["stocks"])
+    shelves_table_df = pd.DataFrame(collections[" shelves"])
+    while True:
+        main_menu()
+        choice = input("Enter your choice (0-5): ")
 
-    elif choice == "0":
-        print("Exiting... Goodbye!")
-        break
+        if choice == "1":
+            print("\nStyled Dummy Table:")
+            display_colored_table(dummy_table_df)
+        elif choice == "2":
+            print("\nStyled Suppliers Table:")
+            display_colored_table(suppliers_table_df)
+        elif choice == "3":
+            print("\nStyled Warehouses Table:")
+            display_colored_table(warehouses_table_df)
+        elif choice == "4":
+            print("\nStyled Stocks Table:")
+            display_colored_table(stocks_table_df)
+        elif choice == "5":
+            print("\nStyled Shelves Table:")
+            display_colored_table(shelves_table_df)
+        elif choice == "6":
+            # Go to the graphs menu
+            while True:
+                graph_menu()
+                graph_choice = input("Enter your choice (0-9): ")
 
-    else:
-        print("Invalid choice! Please select a valid option (0-6).")
+                if graph_choice == "1":
+                    create_product_prices_bar_chart(dummy_table_df)
+                elif graph_choice == "2":
+                    create_product_quantities_line_chart(dummy_table_df)
+                elif graph_choice == "3":
+                    create_product_categories_pie_chart(dummy_table_df)
+                elif graph_choice == "4":
+                    create_supplier_contact_persons_bar_chart(suppliers_table_df)
+                elif graph_choice == "5":
+                    create_warehouse_capacities_bar_chart(warehouses_table_df)
+                elif graph_choice == "6":
+                    create_warehouse_locations_pie_chart(warehouses_table_df)
+                elif graph_choice == "7":
+                    create_stock_quantities_bar_chart(stocks_table_df)
+                elif graph_choice == "8":
+                    create_shelf_capacities_line_chart(shelves_table_df)
+                elif graph_choice == "9":
+                    create_shelf_capacities_bar_chart(shelves_table_df)
+                elif graph_choice == "0":
+                    break
+                else:
+                    print("Invalid choice! Please select a valid option (0-9).")
+
+        elif choice == "0":
+            print("Exiting... Goodbye!")
+            break
+
+        else:
+            print("Invalid choice! Please select a valid option (0-6).")
+
+
+if __name__ == "__main__":
+    main()
